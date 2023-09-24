@@ -10,7 +10,40 @@ const getAmerica = (req = request, res = response) => {
         .then(({ status, data, statusText }) => {
 
             const countryNames = data
-            .filter(country => country.translations?.spa)
+            .map(country => ({ name: country.translations.spa.common,
+                flag: country.flag, code: country.cioc,
+                id: country.ccn3, capital: country.capital,  
+                languages: country.languages }));
+
+            // handle success
+            console.log({ status, data, statusText });
+            const {results, page } = data;
+            res.status(200).json({
+                status,
+                countries: countryNames,
+                statusText,               
+            });
+        })
+        .catch((error)=>{
+            // handle error
+            console.log(error);
+            res.status(400).json({
+                status:400,
+                msg: 'Error inesperado'
+            });
+        });        
+}
+
+const getAmericaByLanguage = (req = request, res = response) => {        
+    // const api = process.env.API_KEY;
+    const { language } = req.query;
+    console.log(language);
+
+    axios.get(`${url}/region/america/`)
+        .then(({ status, data, statusText }) => {
+
+            const countryNames = data
+            .filter(country => country.language.spa === `${language}`)
             .map(country => ({ name: country.translations.spa.common,
             capital: country.capital, flag: country.flag, 
             language: country.languages, code: country.cioc,
@@ -35,18 +68,28 @@ const getAmerica = (req = request, res = response) => {
         });        
 }
 
-const getAmericaID = (req = request, res = response) => {        
+const getAmericaByCode = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
 
     const { abreviacion } = req.params;
+    console.log(abreviacion);
 
     axios.get(`${url}/alpha/${abreviacion}`)
         .then(({ status, data, statusText }) => {
+
+            const country = data
+            .map(country => ({ name: country.translations.spa.common,
+                flag: country.flag, code: country.cioc,
+                id: country.ccn3, capital: country.capital,  
+                languages: country.languages, poblation: country.population, 
+                currencies: country.currencies, region: country.region,
+                subregion: country.subregion, borders: country.borders}));
+
             // handle success
             console.log({ status, data, statusText });
             res.status(200).json({
                 status,
-                data,
+                country: country,
                 statusText,               
             });
         })
@@ -65,6 +108,7 @@ const getAmericaFiltrado = (req = request, res = response) => {
 
     const { capital } = req.query;
     console.log(capital);
+    return;
 
     axios.get(`${url}/capital/${capital}`)
         .then(({ status, data, statusText }) => {
@@ -91,4 +135,4 @@ const getAmericaFiltrado = (req = request, res = response) => {
 
 
 
-module.exports = { getAmerica, getAmericaID, getAmericaFiltrado };
+module.exports = { getAmerica, getAmericaByLanguage, getAmericaByCode };
