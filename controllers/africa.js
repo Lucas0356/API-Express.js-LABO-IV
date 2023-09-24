@@ -9,11 +9,17 @@ const getAfrica = (req = request, res = response) => {
     axios.get(`${url}/`)
         .then(({ status, data, statusText }) => {
             // handle success
+
+            // Filtrar y obtener solo los nombres en español (el oficial y el común)
+            const countryNames = data
+            .filter(country => country.translations?.spa)
+            .map(country => country.translations.spa);
+
             console.log({ status, data, statusText });
-            const {results, page } = data;
+            const { results } = data;
             res.status(200).json({
                 status,
-                data,
+                countries: countryNames,
                 statusText,               
             });
         })
