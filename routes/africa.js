@@ -1,9 +1,11 @@
 const { Router } = require('express');
-const { getAfrica } = require('../controllers/africa');
+const { getCountries, getCountriesUpToPopulation } = require('../controllers/africa');
 
 const rutas = Router();
 
-rutas.get('/africa/', getCountriesUpToPopulation);
-rutas.get('/africa', getCountries);
+// Obtener todos los países de África
+rutas.get('/africa/all', getCountries);
+// Filtrar países de África hasta x cantidad de población
+rutas.get('/africa/population', getCountriesUpToPopulation);
 
 module.exports = rutas;

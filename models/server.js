@@ -9,7 +9,7 @@ class Server{
     }
 
     routers(){
-        this.app.use('/api/v1', require('../routes/africa'));
+        this.app.use('/api/v1/countries', require('../routes/africa'));
     }
 
     listen(){
