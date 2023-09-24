@@ -8,6 +8,11 @@ const getAmerica = (req = request, res = response) => {
 
     axios.get(`${url}/region/america/`)
         .then(({ status, data, statusText }) => {
+
+            const countryNames = data
+            .filter(country => country.translations?.spa)
+            .map(country => country.translations.spa);
+            
             // handle success
             console.log({ status, data, statusText });
             const {results, page } = data;
