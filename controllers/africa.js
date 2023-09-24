@@ -3,6 +3,7 @@ const { request, response} = require('express');
 
 const url = 'https://restcountries.com/v3.1/region/africa';
 
+// Obtener todos los países de África
 const getCountries = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
 
@@ -21,8 +22,10 @@ const getCountries = (req = request, res = response) => {
             // Cantidad de países en el objeto Map
             const cantCountries = countries.length;
 
+            // Imprimimos en consola los datos
             console.log({ status, data, statusText });
-            const { results } = data;
+
+            // Devolvemos el JSON con la info
             res.status(200).json({
                 status,
                 cant: cantCountries,
@@ -40,15 +43,14 @@ const getCountries = (req = request, res = response) => {
         });        
 }
 
+// Filtrar países de África hasta x cantidad de población
 const getCountriesUpToPopulation = (req = request, res = response) => {
     // const api = process.env.API_KEY;
     const population = req.query.population;
     console.log(population);
 
     axios.get(`${url}`)
-    .then(({ status, data, statusText }) => {
-        console.log('anda')
-        console.log('anda')
+        .then(({ status, data, statusText }) => {
         const countries = data
             .filter(country => country.population <= population)
             .map(country => ({
@@ -64,6 +66,7 @@ const getCountriesUpToPopulation = (req = request, res = response) => {
         // Cantidad de países en el objeto Map
         const cantCountries = countries.length;
 
+        // Si no encontró ningún país, devolvemos un 404 not found
         if (cantCountries === 0){
             res.status(404).json({
                 status: 404,
@@ -73,7 +76,6 @@ const getCountriesUpToPopulation = (req = request, res = response) => {
         }
 
         // handle success
-        const {results, page } = data;
         res.status(200).json({
             status,
             cant: cantCountries,
