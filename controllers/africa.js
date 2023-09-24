@@ -3,7 +3,7 @@ const { request, response} = require('express');
 
 const url = 'https://restcountries.com/v3.1/region/africa';
 
-const getAfrica = (req = request, res = response) => {        
+const getCountries = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
 
     axios.get(`${url}/`)
@@ -40,4 +40,11 @@ const getAfrica = (req = request, res = response) => {
         });        
 }
 
-module.exports = { getAfrica };
+const getCountriesUpToPopulation = (req = request, res = response) => {
+    // const api = process.env.API_KEY;
+    const language = req.query.language;
+    console.log(language);
+
+}
+
+module.exports = { getCountries, getCountriesUpToPopulation };
