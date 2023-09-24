@@ -1,12 +1,12 @@
 const axios = require('axios');
 const { request, response} = require('express');
 
-const url = 'https://restcountries.com/v3.1/';
+const url = 'https://restcountries.com/v3.1/region/america';
 
 const getCountries = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
 
-    axios.get(`${url}/region/america`)
+    axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
 
             const countries = data
@@ -18,12 +18,13 @@ const getCountries = (req = request, res = response) => {
                 capital: country.capital,  
                 languages: country.languages }));
 
+            const cantCountries = countries.length;
+
             // handle success
             console.log({ status, data, statusText });
-            const {results, page } = data;
             res.status(200).json({
                 status,
-                cant: countries.length,
+                cant: cantCountries,
                 countriesFromAmerica: countries,
                 statusText,               
             });
@@ -41,13 +42,15 @@ const getCountries = (req = request, res = response) => {
 const getCountryByCode = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
 
-    const { abreviacion } = req.params;
+    const { param } = req.params;
+    const abreviacion = param.toUpperCase();
     console.log(abreviacion);
 
-    axios.get(`${url}/alpha/${abreviacion}`)
+    axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
 
             const country = data
+            .filter(country => country.cioc === abreviacion)
             .map(country => ({ 
                 name: country.translations.spa,
                 flag: country.flag, 
@@ -61,10 +64,22 @@ const getCountryByCode = (req = request, res = response) => {
                 subregion: country.subregion, 
                 borders: country.borders}));
 
+            const cantCountries = country.length;
+
+            if (cantCountries === 0){
+                res.status(404).json({
+                     status: 404,
+                     msg: `No existen países con el código ${abreviacion} en América.`,
+                });
+                return;
+             }
+        
+
             // handle success
             console.log({ status, data, statusText });
             res.status(200).json({
                 status,
+                cant: cantCountries,
                 country: country,
                 statusText,               
             });
@@ -81,16 +96,14 @@ const getCountryByCode = (req = request, res = response) => {
 
 const getCountriesByLanguage = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
-    const language = req.query.language;
+    const { language } = req.query;
     console.log(language);
 
     axios.get(`${url}/region/america/`)
         .then(({ status, data, statusText }) => {
             
-            console.log("ANDA");
-
             const countryNames = data
-            .filter(country => language[country.language] === `${language}`)
+            .filter(country => Object.values(country.language).includes(language))
             .map(country => ({ 
                 name: country.translations.spa.common,
                 flag: country.flag, 
@@ -101,7 +114,7 @@ const getCountriesByLanguage = (req = request, res = response) => {
 
             // handle success
             console.log({ status, data, statusText });
-            const {results, page } = data;
+            console.log(language);
             res.status(200).json({
                 status,
                 countries: countryNames,
