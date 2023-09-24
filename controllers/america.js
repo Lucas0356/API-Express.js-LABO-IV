@@ -3,13 +3,13 @@ const { request, response} = require('express');
 
 const url = 'https://restcountries.com/v3.1/';
 
-const getAmerica = (req = request, res = response) => {        
+const getCountries = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
 
-    axios.get(`${url}/region/america/`)
+    axios.get(`${url}/region/america`)
         .then(({ status, data, statusText }) => {
 
-            const countryNames = data
+            const countries = data
             .map(country => ({ name: country.translations.spa.common,
                 flag: country.flag, code: country.cioc,
                 id: country.ccn3, capital: country.capital,  
@@ -20,7 +20,8 @@ const getAmerica = (req = request, res = response) => {
             const {results, page } = data;
             res.status(200).json({
                 status,
-                countries: countryNames,
+                cant: countries.length,
+                countriesFromAmerica: countries,
                 statusText,               
             });
         })
@@ -34,41 +35,7 @@ const getAmerica = (req = request, res = response) => {
         });        
 }
 
-const getAmericaByLanguage = (req = request, res = response) => {        
-    // const api = process.env.API_KEY;
-    const { language } = req.query;
-    console.log(language);
-
-    axios.get(`${url}/region/america/`)
-        .then(({ status, data, statusText }) => {
-
-            const countryNames = data
-            .filter(country => country.language.spa === `${language}`)
-            .map(country => ({ name: country.translations.spa.common,
-            capital: country.capital, flag: country.flag, 
-            language: country.languages, code: country.cioc,
-            id: country.ccn3}));
-
-            // handle success
-            console.log({ status, data, statusText });
-            const {results, page } = data;
-            res.status(200).json({
-                status,
-                countries: countryNames,
-                statusText,               
-            });
-        })
-        .catch((error)=>{
-            // handle error
-            console.log(error);
-            res.status(400).json({
-                status:400,
-                msg: 'Error inesperado'
-            });
-        });        
-}
-
-const getAmericaByCode = (req = request, res = response) => {        
+const getCountryByCode = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
 
     const { abreviacion } = req.params;
@@ -103,22 +70,29 @@ const getAmericaByCode = (req = request, res = response) => {
         });        
 }
 
-const getAmericaFiltrado = (req = request, res = response) => {        
+const getCountriesByLanguage = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
+    const language = req.query.language;
+    console.log(language);
 
-    const { capital } = req.query;
-    console.log(capital);
-    return;
-
-    axios.get(`${url}/capital/${capital}`)
+    axios.get(`${url}/region/america/`)
         .then(({ status, data, statusText }) => {
+            
+            console.log("ANDA");
+
+            const countryNames = data
+            .filter(country => country.language === `${language}`)
+            .map(country => ({ name: country.translations.spa.common,
+                flag: country.flag, code: country.cioc,
+                id: country.ccn3, capital: country.capital,
+                languages: country.languages}));
+
             // handle success
             console.log({ status, data, statusText });
-            const { name, capital } = data[0];
+            const {results, page } = data;
             res.status(200).json({
                 status,
-                name,
-                capital,
+                countries: countryNames,
                 statusText,               
             });
         })
@@ -132,7 +106,4 @@ const getAmericaFiltrado = (req = request, res = response) => {
         });        
 }
 
-
-
-
-module.exports = { getAmerica, getAmericaByLanguage, getAmericaByCode };
+module.exports = { getCountries, getCountriesByLanguage, getCountryByCode };

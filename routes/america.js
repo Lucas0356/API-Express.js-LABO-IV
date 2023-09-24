@@ -1,11 +1,11 @@
 const { Router } = require('express');
-const { getAmerica, getAmericaByLanguage, getAmericaByCode } = require('../controllers/america');
+const { getCountries, getCountriesByLanguage, getCountryByCode } = require('../controllers/america');
 
 const rutas = Router();
 
-rutas.get('/america', getAmerica);
-rutas.get('/america', getAmericaByLanguage);
-rutas.get('/america/:abreviacion', getAmericaByCode);
+rutas.get('/america', getCountriesByLanguage);
+rutas.get('/america', getCountries);
+rutas.get('/america/:abreviacion', getCountryByCode);
 
 
 module.exports = rutas;
