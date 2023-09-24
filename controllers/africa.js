@@ -10,8 +10,7 @@ const getAfrica = (req = request, res = response) => {
         .then(({ status, data, statusText }) => {
             // handle success
 
-            const countryNames = data
-            .filter(country => country.translations?.spa)
+            const countries = data
             .map(country => ({ name: country.translations.spa.common, 
                 flag: country.flag, code: country.cioc, id: country.ccn3,
                 capital: country.capital, languages: country.languages}));
@@ -20,7 +19,7 @@ const getAfrica = (req = request, res = response) => {
             const { results } = data;
             res.status(200).json({
                 status,
-                countries: countryNames,
+                countriesFromAfrica: countries,
                 statusText,               
             });
         })
