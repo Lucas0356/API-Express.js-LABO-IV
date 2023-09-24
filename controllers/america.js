@@ -10,9 +10,12 @@ const getCountries = (req = request, res = response) => {
         .then(({ status, data, statusText }) => {
 
             const countries = data
-            .map(country => ({ name: country.translations.spa.common,
-                flag: country.flag, code: country.cioc,
-                id: country.ccn3, capital: country.capital,  
+            .map(country => ({ 
+                name: country.translations.spa.common,
+                flag: country.flag, 
+                code: country.cioc,
+                id: country.ccn3,
+                capital: country.capital,  
                 languages: country.languages }));
 
             // handle success
@@ -45,12 +48,18 @@ const getCountryByCode = (req = request, res = response) => {
         .then(({ status, data, statusText }) => {
 
             const country = data
-            .map(country => ({ name: country.translations.spa.common,
-                flag: country.flag, code: country.cioc,
-                id: country.ccn3, capital: country.capital,  
-                languages: country.languages, poblation: country.population, 
-                currencies: country.currencies, region: country.region,
-                subregion: country.subregion, borders: country.borders}));
+            .map(country => ({ 
+                name: country.translations.spa,
+                flag: country.flag, 
+                code: country.cioc,
+                id: country.ccn3, 
+                capital: country.capital,  
+                languages: country.languages, 
+                poblation: country.population, 
+                currencies: country.currencies, 
+                region: country.region,
+                subregion: country.subregion, 
+                borders: country.borders}));
 
             // handle success
             console.log({ status, data, statusText });
@@ -81,10 +90,13 @@ const getCountriesByLanguage = (req = request, res = response) => {
             console.log("ANDA");
 
             const countryNames = data
-            .filter(country => country.language === `${language}`)
-            .map(country => ({ name: country.translations.spa.common,
-                flag: country.flag, code: country.cioc,
-                id: country.ccn3, capital: country.capital,
+            .filter(country => language[country.language] === `${language}`)
+            .map(country => ({ 
+                name: country.translations.spa.common,
+                flag: country.flag, 
+                code: country.cioc,
+                id: country.ccn3, 
+                capital: country.capital,
                 languages: country.languages}));
 
             // handle success
