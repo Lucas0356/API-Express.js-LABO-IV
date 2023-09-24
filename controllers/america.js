@@ -99,11 +99,14 @@ const getCountriesByLanguage = (req = request, res = response) => {
     const { language } = req.query;
     console.log(language);
 
-    axios.get(`${url}/region/america/`)
+    axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
             
             const countryNames = data
-            .filter(country => Object.values(country.language).includes(language))
+            .filter(country => {
+                // Verificar si el país tiene la propiedad 'languages' y si el idioma está presente
+                return country.languages && Object.values(country.languages).includes(language);
+              })
             .map(country => ({ 
                 name: country.translations.spa.common,
                 flag: country.flag, 
