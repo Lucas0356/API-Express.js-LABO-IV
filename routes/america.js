@@ -3,8 +3,8 @@ const { getCountries, getCountriesByLanguage, getCountryByCode } = require('../c
 
 const rutas = Router();
 
+rutas.get('/america/all', getCountries);
 rutas.get('/america/language', getCountriesByLanguage);
-rutas.get('/america', getCountries);
 rutas.get('/america/:param', getCountryByCode);
 
 
