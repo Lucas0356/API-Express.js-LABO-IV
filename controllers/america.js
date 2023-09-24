@@ -11,14 +11,14 @@ const getAmerica = (req = request, res = response) => {
 
             const countryNames = data
             .filter(country => country.translations?.spa)
-            .map(country => country.translations.spa);
-            
+            .map(country => country.translations.spa.common);
+
             // handle success
             console.log({ status, data, statusText });
             const {results, page } = data;
             res.status(200).json({
                 status,
-                data,
+                countries: countryNames,
                 statusText,               
             });
         })
