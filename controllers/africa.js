@@ -14,8 +14,8 @@ const getAfrica = (req = request, res = response) => {
             const countryNames = data
             .filter(country => country.translations?.spa)
             .map(country => ({ name: country.translations.spa.common, 
-                capital: country.capital, languages: country.languages,
-                flag: country.flag}));
+                flag: country.flag, code: country.cioc,
+                capital: country.capital, languages: country.languages}));
 
             console.log({ status, data, statusText });
             const { results } = data;
