@@ -13,9 +13,8 @@ const getAfrica = (req = request, res = response) => {
             const {results, page } = data;
             res.status(200).json({
                 status,
-                results,
-                page,
-                statusText,                
+                data,
+                statusText,               
             });
         })
         .catch((error)=>{
