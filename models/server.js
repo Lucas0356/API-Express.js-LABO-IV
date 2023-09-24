@@ -10,6 +10,7 @@ class Server{
 
     routers(){
         this.app.use('/api/v1', require('../routes/africa'));
+        this.app.use('/api/v1', require('../routes/america'));
     }
 
     listen(){
