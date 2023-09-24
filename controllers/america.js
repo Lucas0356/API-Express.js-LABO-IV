@@ -97,6 +97,7 @@ const getCountryByCode = (req = request, res = response) => {
 const getCountriesByLanguage = (req = request, res = response) => {        
     // const api = process.env.API_KEY;
     const { language } = req.query;
+    const languageFixed = language.charAt(0).toUpperCase() + language.slice(1)
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
@@ -104,7 +105,7 @@ const getCountriesByLanguage = (req = request, res = response) => {
             const countries = data
             .filter(country => {
                 // Verificar si el país tiene la propiedad 'languages' y si el idioma está presente
-                return country.languages && Object.values(country.languages).includes(language);
+                return country.languages && Object.values(country.languages).includes(languageFixed);
               })
             .map(country => ({ 
                 name: country.translations.spa.common,
@@ -119,7 +120,7 @@ const getCountriesByLanguage = (req = request, res = response) => {
             if (cantCountries === 0){
                 res.status(404).json({
                      status: 404,
-                     msg: `No existen países con el lenguaje ${language} en América.`,
+                     msg: `No existen países con el lenguaje '${languageFixed}' en América.`,
                 });
                 return;
              }
