@@ -11,7 +11,8 @@ const getAmerica = (req = request, res = response) => {
 
             const countryNames = data
             .filter(country => country.translations?.spa)
-            .map(country => country.translations.spa.common);
+            .map(country => ({ name: country.translations.spa.common,
+            capital: country.capital[0]}));
 
             // handle success
             console.log({ status, data, statusText });
