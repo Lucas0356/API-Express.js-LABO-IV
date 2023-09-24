@@ -10,10 +10,12 @@ const getAfrica = (req = request, res = response) => {
         .then(({ status, data, statusText }) => {
             // handle success
 
-            // Filtrar y obtener solo los nombres en español (el oficial y el común)
+            // Filtrar y obtener solo los nombres en español (el common)
             const countryNames = data
             .filter(country => country.translations?.spa)
-            .map(country => ({ name: country.translations.spa.common }));
+            .map(country => ({ name: country.translations.spa.common, 
+                capital: country.capital, languages: country.languages,
+                flag: country.flag}));
 
             console.log({ status, data, statusText });
             const { results } = data;
