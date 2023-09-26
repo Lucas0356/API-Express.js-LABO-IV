@@ -5,36 +5,38 @@ const url = 'https://restcountries.com/v3.1/region/africa';
 
 // Obtener todos los países de África
 const getCountries = (req = request, res = response) => {        
-    // const api = process.env.API_KEY;
 
-    axios.get(`${url}/`)
+    axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
-            // handle success
+            // Mapeamos los datos de los países de África para seleccionar ciertos atributos:
+            const countries = data.map(country => ({
+                // Nombre del país (en español)
+                name: country.translations.spa.common,
+                // Bandera
+                flag: country.flag,
+                // Código de país (3 letras)
+                code: country.cioc,
+                // ID del país (num)
+                id: country.ccn3,
+                // Nombre de la(s) capital(es)
+                capital: country.capital,
+                // Lenguajes hablados en el país
+                languages: country.languages
+            }));
 
-            /* Seleccionamos los datos que vamos a querer mostrar 
-            Nombre del país (en español), bandera, codigo (3 letras), ID (num)
-            nombre de la/s capital/es y los lenguajes hablados en el país */
-            const countries = data
-            .map(country => ({ name: country.translations.spa.common, 
-                flag: country.flag, code: country.cioc, id: country.ccn3,
-                capital: country.capital, languages: country.languages}));
+            // Cantidad de países en el objeto
+            const countryCount = countries.length;
 
-            // Cantidad de países en el objeto Map
-            const cantCountries = countries.length;
-
-            // Imprimimos en consola los datos
-            console.log({ status, data, statusText });
-
-            // Devolvemos el JSON con la info
+            // Handle success
             res.status(200).json({
                 status,
-                cant: cantCountries,
-                countriesFromAfrica: countries,
-                statusText,               
+                countryCount: countryCount,
+                africanCountries: countries,
+                statusText
             });
         })
         .catch((error)=>{
-            // handle error
+            // Handle error
             console.log(error);
             res.status(400).json({
                 status:400,
@@ -43,99 +45,127 @@ const getCountries = (req = request, res = response) => {
         });        
 }
 
+// Buscar país de África por su ID
+const getCountryById = (req = request, res = response) => {
+
+    const { id } = req.params;
+
+    axios.get(`${url}`)
+        .then(({ status, data, statusText }) => {
+            // Mapeamos los datos de los países de África para seleccionar ciertos atributos:
+            const country = data.filter(country => country.ccn3 === id)
+            .map(country => ({
+                // Nombre del país (oficial y common)
+                name: country.translations.spa,
+                // Bandera
+                flag: country.flag,
+                // Código de país (3 letras)
+                code: country.cioc,
+                // ID del país (num)
+                id: country.ccn3,
+                // Nombre de la(s) capital(es)
+                capital: country.capital,
+                // Lenguajes hablados en el país
+                languages: country.languages,
+                // Población
+                population: country.population, 
+                // Monedas de curso legal
+                currencies: country.currencies,
+                // Región del país
+                region: country.region,
+                // Subregión del país
+                subregion: country.subregion, 
+                // Países limítrofes
+                borders: country.borders
+            }));
+
+            // Cantidad de países en el objeto
+            const countryCount = country.length;
+
+            // Si no encontró al país, devolvemos un 404 not found
+            if (cantCountries === 0){
+                res.status(404).json({
+                    status: 404,
+                    msg: `No existen países con el id ${id} en África.`,
+                });
+                return;
+            }
+
+            // Handle success
+            console.log({ status, data, statusText });
+            res.status(200).json({
+                status,
+                countryCount: countryCount,
+                country: country,
+                statusText
+            });
+        })
+        .catch((error)=>{
+            // Handle error
+            console.log(error);
+            res.status(400).json({
+                status:400,
+                msg: 'Error inesperado'
+            });
+        });  
+}
+
 // Filtrar países de África hasta x cantidad de población
 const getCountriesUpToPopulation = (req = request, res = response) => {
-    // const api = process.env.API_KEY;
+
     const population = req.query.population;
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
+        // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
         const countries = data
+            // Verificar que el país tiene una población menor/igual que la ingresada por el usuario
             .filter(country => country.population <= population)
             .map(country => ({
-                name: country.translations.spa.common,
-                flag: country.flag, 
+                // Nombre del país (oficial y common)
+                name: country.translations.spa,
+                // Bandera
+                flag: country.flag,
+                // Código de país (3 letras)
                 code: country.cioc,
+                // ID del país (num)
                 id: country.ccn3,
+                // Nombre de la(s) capital(es)
                 capital: country.capital,
+                // Lenguajes hablados en el país
                 languages: country.languages,
-                population: country.population
+                // Población
+                population: country.population, 
             }));
 
-        // Cantidad de países en el objeto Map
-        const cantCountries = countries.length;
+        // Cantidad de países en el objeto
+        const countryCount = country.length;
 
         // Si no encontró ningún país, devolvemos un 404 not found
-        if (cantCountries === 0){
+        if (countryCount === 0){
             res.status(404).json({
                 status: 404,
-                msg: `No existen países con menos de ${population} de población en África.`,
+                msg: `No existen países en África con una población menor o igual que '${population}'.`,
             });
             return;
         }
 
-        // handle success
+        // Handle success
         res.status(200).json({
             status,
-            cant: cantCountries,
+            countryCount: countryCount,
             countries: countries,
             statusText,               
         });
     })
     .catch((error)=>{
-        // handle error
+        // Handle error
         console.log(error);
         res.status(400).json({
             status:400,
             msg: 'Error inesperado'
         });
-    }); 
+    });   
 }
 
-// Buscar país de África por su ID
-const getCountryById = (req = request, res = response) => {
-    // const api = process.env.API_KEY;
-    const { id } = req.params;
-
-    axios.get(`${url}`)
-        .then(({ status, data, statusText }) => {
-            const country = data
-            .filter(country => country.ccn3 === id)
-            .map(country => ({ 
-                name: country.translations.spa,
-                flag: country.flag, 
-                code: country.cioc,
-                id: country.ccn3, 
-                capital: country.capital,  
-                languages: country.languages, 
-                population: country.population, 
-                currencies: country.currencies, 
-                region: country.region,
-                subregion: country.subregion, 
-                borders: country.borders
-            }));
-        
-        // Cantidad de países en el objeto Map
-        const cantCountries = country.length;
-
-        // Si no encontró al país, devolvemos un 404 not found
-        if (cantCountries === 0){
-            res.status(404).json({
-                status: 404,
-                msg: `No existen países con el id ${id} en África.`,
-            });
-            return;
-        }
-
-        // handle success
-        console.log({ status, data, statusText });
-        res.status(200).json({
-            status,
-            cant: cantCountries,
-            country: country,
-            statusText,               
-        });
-    })
-}
-
-module.exports = { getCountries, getCountriesUpToPopulation, getCountryById };
+module.exports = { getCountries, getCountryById, getCountriesUpToPopulation};
