@@ -3,145 +3,171 @@ const { request, response} = require('express');
 
 const url = 'https://restcountries.com/v3.1/region/america';
 
-const getCountries = (req = request, res = response) => {        
-    // const api = process.env.API_KEY;
+// Obtener todos los países de África
+const getCountries = (req = request, res = response) => {      
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
-
-            const countries = data
-            .map(country => ({ 
+            // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
+            const countries = data.map(country => ({
+                // Nombre del país (en español)
                 name: country.translations.spa.common,
-                flag: country.flag, 
+                // Bandera
+                flag: country.flag,
+                // Código de país (3 letras)
                 code: country.cioc,
+                // ID del país (num)
                 id: country.ccn3,
-                capital: country.capital,  
-                languages: country.languages }));
+                // Nombre de la(s) capital(es)
+                capital: country.capital,
+                // Lenguajes hablados en el país
+                languages: country.languages
+            }));
 
-            const cantCountries = countries.length;
+            // Cantidad de países en el objeto
+            const countryCount = countries.length;
 
-            // handle success
-            console.log({ status, data, statusText });
+            // Devolvemos la respuesta en formato JSON
             res.status(200).json({
                 status,
-                cant: cantCountries,
-                countriesFromAmerica: countries,
-                statusText,               
+                countryCount: countryCount,
+                americanCountries: countries,
+                statusText,
             });
         })
         .catch((error)=>{
-            // handle error
+            // Handle error
             console.log(error);
             res.status(400).json({
                 status:400,
                 msg: 'Error inesperado'
             });
-        });        
+        });       
 }
 
+// Buscar país de América por su código de país (3 letras)
 const getCountryByCode = (req = request, res = response) => {        
-    // const api = process.env.API_KEY;
 
     const { param } = req.params;
     const abreviacion = param.toUpperCase();
-    console.log(abreviacion);
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
-
-            const country = data
-            .filter(country => country.cioc === abreviacion)
-            .map(country => ({ 
+            // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
+            const country = data.filter(country => country.cioc === abreviacion)
+            .map(country => ({
+                // Nombre del país (oficial y common)
                 name: country.translations.spa,
-                flag: country.flag, 
+                // Bandera
+                flag: country.flag,
+                // Código de país (3 letras)
                 code: country.cioc,
-                id: country.ccn3, 
-                capital: country.capital,  
-                languages: country.languages, 
-                poblation: country.population, 
-                currencies: country.currencies, 
+                // ID del país (num)
+                id: country.ccn3,
+                // Nombre de la(s) capital(es)
+                capital: country.capital,
+                // Lenguajes hablados en el país
+                languages: country.languages,
+                // Población
+                population: country.population, 
+                // Monedas de curso legal
+                currencies: country.currencies,
+                // Región del país
                 region: country.region,
+                // Subregión del país
                 subregion: country.subregion, 
-                borders: country.borders}));
+                // Países limítrofes
+                borders: country.borders
+            }));
 
-            const cantCountries = country.length;
+            // Cantidad de países en el objeto
+            const countryCount = countries.length;
 
-            if (cantCountries === 0){
+            // Si no encontró al país, devolvemos un 404 not found
+            if (countryCount === 0){
                 res.status(404).json({
-                     status: 404,
-                     msg: `No existen países con el código ${abreviacion} en América.`,
+                    status: 404,
+                    msg: `No existen países con el código ${abreviacion} en América.`,
                 });
                 return;
-             }
-        
+            }
 
-            // handle success
+            // Handle success
             console.log({ status, data, statusText });
             res.status(200).json({
                 status,
-                cant: cantCountries,
+                cant: countryCount,
                 country: country,
                 statusText,               
             });
         })
         .catch((error)=>{
-            // handle error
+            // Handle error
             console.log(error);
             res.status(400).json({
                 status:400,
                 msg: 'Error inesperado'
             });
-        });        
+        });   
 }
 
 const getCountriesByLanguage = (req = request, res = response) => {        
-    // const api = process.env.API_KEY;
+
     const { language } = req.query;
     const languageFixed = language.charAt(0).toUpperCase() + language.slice(1)
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
-            
+            // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
             const countries = data
             .filter(country => {
                 // Verificar si el país tiene la propiedad 'languages' y si el idioma está presente
                 return country.languages && Object.values(country.languages).includes(languageFixed);
-              })
+            })
             .map(country => ({ 
-                name: country.translations.spa.common,
-                flag: country.flag, 
+                // Nombre del país (oficial y common)
+                name: country.translations.spa,
+                // Bandera
+                flag: country.flag,
+                // Código de país (3 letras)
                 code: country.cioc,
-                id: country.ccn3, 
+                // ID del país (num)
+                id: country.ccn3,
+                // Nombre de la(s) capital(es)
                 capital: country.capital,
-                languages: country.languages}));
+                // Lenguajes hablados en el país
+                languages: country.languages
+            }));
 
-            const cantCountries = countries.length;
+            // Cantidad de países en el objeto
+            const countryCount = country.length;
 
+            // Si no encontró al país, devolvemos un 404 not found
             if (cantCountries === 0){
                 res.status(404).json({
-                     status: 404,
-                     msg: `No existen países con el lenguaje '${languageFixed}' en América.`,
+                    status: 404,
+                    msg: `No existen países en América con el lenguaje '${languageFixed}.'`,
                 });
                 return;
-             }
+            }
 
-            // handle success
+            // Handle success
             console.log({ status, data, statusText });
             res.status(200).json({
                 status,
-                cant: cantCountries,
+                countryCount: countryCount,
                 countriesWithLanguage: countries,
                 statusText,               
             });
         })
         .catch((error)=>{
-            // handle error
+            // Handle error
             console.log(error);
             res.status(400).json({
                 status:400,
                 msg: 'Error inesperado'
             });
-        });        
+        });      
 }
 
-module.exports = { getCountries, getCountriesByLanguage, getCountryByCode };
+module.exports = { getCountries, getCountryByCode, getCountriesByLanguage };
