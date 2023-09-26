@@ -1,14 +1,14 @@
 const axios = require('axios');
 const { request, response} = require('express');
 
-const url = 'https://restcountries.com/v3.1/region/africa';
+const url = 'https://restcountries.com/v3.1/region/america';
 
 // Obtener todos los países de África
-const getCountries = (req = request, res = response) => {        
+const getCountries = (req = request, res = response) => {      
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
-            // Mapeamos los datos de los países de África para seleccionar ciertos atributos:
+            // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
             const countries = data.map(country => ({
                 // Nombre del país (en español)
                 name: country.translations.spa.common,
@@ -27,12 +27,12 @@ const getCountries = (req = request, res = response) => {
             // Cantidad de países en el objeto
             const countryCount = countries.length;
 
-            // Handle success
+            // Devolvemos la respuesta en formato JSON
             res.status(200).json({
                 status,
                 countryCount: countryCount,
-                africanCountries: countries,
-                statusText
+                americanCountries: countries,
+                statusText,
             });
         })
         .catch((error)=>{
@@ -42,18 +42,19 @@ const getCountries = (req = request, res = response) => {
                 status:400,
                 msg: 'Error inesperado'
             });
-        });        
+        });       
 }
 
-// Buscar país de África por su ID
-const getCountryById = (req = request, res = response) => {
+// Buscar país de América por su código de país (3 letras)
+const getCountryByCode = (req = request, res = response) => {        
 
-    const { id } = req.params;
+    const { param } = req.params;
+    const abreviacion = param.toUpperCase();
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
-            // Mapeamos los datos de los países de África para seleccionar ciertos atributos:
-            const country = data.filter(country => country.ccn3 === id)
+            // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
+            const country = data.filter(country => country.cioc === abreviacion)
             .map(country => ({
                 // Nombre del país (oficial y common)
                 name: country.translations.spa,
@@ -86,7 +87,7 @@ const getCountryById = (req = request, res = response) => {
             if (countryCount === 0){
                 res.status(404).json({
                     status: 404,
-                    msg: `No existen países con el id ${id} en África.`,
+                    msg: `No existen países con el código ${abreviacion} en América.`,
                 });
                 return;
             }
@@ -95,9 +96,9 @@ const getCountryById = (req = request, res = response) => {
             console.log({ status, data, statusText });
             res.status(200).json({
                 status,
-                countryCount: countryCount,
+                cant: countryCount,
                 country: country,
-                statusText
+                statusText,               
             });
         })
         .catch((error)=>{
@@ -107,21 +108,23 @@ const getCountryById = (req = request, res = response) => {
                 status:400,
                 msg: 'Error inesperado'
             });
-        });  
+        });   
 }
 
-// Filtrar países de África hasta x cantidad de población
-const getCountriesUpToPopulation = (req = request, res = response) => {
+const getCountriesByLanguage = (req = request, res = response) => {        
 
-    const population = req.query.population;
+    const { language } = req.query;
+    const languageFixed = language.charAt(0).toUpperCase() + language.slice(1)
 
     axios.get(`${url}`)
         .then(({ status, data, statusText }) => {
-        // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
-        const countries = data
-            // Verificar que el país tiene una población menor/igual que la ingresada por el usuario
-            .filter(country => country.population <= population)
-            .map(country => ({
+            // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
+            const countries = data
+            .filter(country => {
+                // Verificar si el país tiene la propiedad 'languages' y si el idioma está presente
+                return country.languages && Object.values(country.languages).includes(languageFixed);
+            })
+            .map(country => ({ 
                 // Nombre del país (oficial y common)
                 name: country.translations.spa,
                 // Bandera
@@ -133,39 +136,38 @@ const getCountriesUpToPopulation = (req = request, res = response) => {
                 // Nombre de la(s) capital(es)
                 capital: country.capital,
                 // Lenguajes hablados en el país
-                languages: country.languages,
-                // Población
-                population: country.population, 
+                languages: country.languages
             }));
 
-        // Cantidad de países en el objeto
-        const countryCount = countries.length;
+            // Cantidad de países en el objeto
+            const countryCount = countries.length;
 
-        // Si no encontró ningún país, devolvemos un 404 not found
-        if (countryCount === 0){
-            res.status(404).json({
-                status: 404,
-                msg: `No existen países en África con una población menor o igual que '${population}'.`,
+            // Si no encontró al país, devolvemos un 404 not found
+            if (countryCount=== 0){
+                res.status(404).json({
+                    status: 404,
+                    msg: `No existen países en América con el lenguaje '${languageFixed}.'`,
+                });
+                return;
+            }
+
+            // Handle success
+            console.log({ status, data, statusText });
+            res.status(200).json({
+                status,
+                countryCount: countryCount,
+                countriesWithLanguage: countries,
+                statusText,               
             });
-            return;
-        }
-
-        // Handle success
-        res.status(200).json({
-            status,
-            countryCount: countryCount,
-            countries: countries,
-            statusText,               
-        });
-    })
-    .catch((error)=>{
-        // Handle error
-        console.log(error);
-        res.status(400).json({
-            status:400,
-            msg: 'Error inesperado'
-        });
-    });   
+        })
+        .catch((error)=>{
+            // Handle error
+            console.log(error);
+            res.status(400).json({
+                status:400,
+                msg: 'Error inesperado'
+            });
+        });      
 }
 
-module.exports = { getCountries, getCountryById, getCountriesUpToPopulation};
+module.exports = { getCountries, getCountryByCode, getCountriesByLanguage };
