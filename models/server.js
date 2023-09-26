@@ -10,9 +10,9 @@ class Server{
 
     routers(){
         this.app.use((req, res, next) => {
-            // Obtenemos la api_key pasada como parámetro.
-            const apiKey = req.query.api_key;
-      
+            // Obtenemos la api_key pasada como un Query Param.
+            const apiKey = req.headers.api_key;
+
             // Definimos la lista de claves autorizadas.
             const authorizedApiKeys = ["M2QxCkPvTLMic3p", "1NiHfkXcDeptAAD",
             "w29ehxTdUbLwkaN", "ygDNehq5feWCMCc", "yqFTWK2Gfa15cAe"];
@@ -20,13 +20,14 @@ class Server{
             // Verificamos que la api_key pasada como parámetro sea una de las autorizadas.
             if (!apiKey || !authorizedApiKeys.includes(apiKey)) {
                 // Si no lo es, rechazamos la petición y devolvemos la respuesta adecuada.
-              return res.status(401).json({
-                status: 401, 
-                error: 'Acceso no autorizado' });
+                return res.status(401).json({
+                    status: 401, 
+                    error: 'Acceso no autorizado'
+                });
             }
             // Si la api_key es una de las autorizadas, el programa continúa de forma normal.
             next();
-          });
+        });
 
         this.app.use('/api/v1/countries', require('../routes/america'));
         this.app.use('/api/v1/countries', require('../routes/africa'));
