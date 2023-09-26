@@ -138,5 +138,4 @@ const getCountryById = (req = request, res = response) => {
     })
 }
 
-
 module.exports = { getCountries, getCountriesUpToPopulation, getCountryById };

@@ -9,7 +9,6 @@ rutas.get('/africa/all', getCountries);
 // Filtrar países de África hasta x cantidad de población
 rutas.get('/africa/population', getCountriesUpToPopulation);
 
-
 // Buscar país de África por su ID
 rutas.get('/africa/:id', getCountryById);
 
