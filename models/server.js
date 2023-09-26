@@ -1,5 +1,4 @@
 const express = require('express');
-
 class Server{
     constructor(){
         this.port = process.env.PORT || 3000;
@@ -10,9 +9,7 @@ class Server{
     }
 
     routers(){
-        this.app.get('/', function (req, res) {
-            res.send('Hello World');
-        });
+        this.app.use('/api/v1/countries', require('../routes/africa'));
     }
 
     listen(){
