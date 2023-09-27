@@ -10,6 +10,10 @@ sobre países en las regiones de 'África' y 'América'. A continuación, detall
 
 <h2 style="color:#ff0000; font-size:36px;">---- ENDPOINTS ----</h2>
 
+**-- Index**
+
+GET /                                                           | Devuelve el index.html con información.
+
 **-- /africa**
 
 GET /api/v1/countries/africa/all                                | Devuelve todos los países de África.
