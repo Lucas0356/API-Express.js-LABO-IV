@@ -3,9 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>API PAÍSES POR CONTINENTE</title>
 </head>
 <body>
-    <h1> Pagina de Ayuda - Api Express</h1>
+    <section id="documentation">
+        <h1 id="title"> API EXPRESS - CONTINENTES </h1>
+        <h2 class="subtitle">Bienvenido a la API de Datos de Continentes</h2>
+        <p>Esta API proporciona información sobre países de los continentes de América y África.</p>
+        <p><span class="bold">Autores:</span> Martín Reser y Lucas Moltedo</p>
+        <p><span class="bold">API que utilizamos de base:</span> <a href="https://restcountries.com/" target="__blank">Documentación de la API original</a></p>
+        <p><span class="bold">Versión API:</span> v1.0.0</p>
+        <hr class="separator">
+        <h2 class="subtitle">ENDPOINTS ÁFRICA</h2>
+        <p><span class="bold"GET>GET /api/v1/countries/africa/all</span></p>
+        <p>- Devuelve todos los países de África.</p>
+        <p><span class="bold"GET>GET /api/v1/countries/africa/{ID}</span></p>
+        <p>- Devuelve un determinado país en base a un ID.</p>
+        <p><span class="bold"GET>GET /api/v1/countries/africa/population?population={numero}</span></p>
+        <p>- Devuelve los países de África que tengan hasta {numero} habitantes.</p>
+        <hr class="separator">
+        <h2 class="subtitle">ENDPOINTS AMÉRICA</h2>
+        <p><span class="bold"GET>GET /api/v1/countries/america/all</span></p>
+        <p>- Devuelve todos los países de América.</p>
+        <p><span class="bold"GET>GET /api/v1/countries/america/{cioc}</span></p>
+        <p>- Devuelve un determinado país en base a su abreviación.</p>
+        <p><span class="bold"GET>GET /api/v1/countries/america/language?language={lenguaje}</span></p>
+        <p>- Devuelve los países de América que tengan {lenguaje} como lenguaje.</p>
+    </main>
 </body>
 </html>
