@@ -14,8 +14,7 @@ class Server{
             const apiKey = req.headers.api_key;
 
             // Definimos la lista de claves autorizadas.
-            const authorizedApiKeys = ["M2QxCkPvTLMic3p", "1NiHfkXcDeptAAD",
-            "w29ehxTdUbLwkaN", "ygDNehq5feWCMCc", "yqFTWK2Gfa15cAe"];
+            const authorizedApiKeys = process.env.API_KEYS;
 
             // Verificamos que la api_key pasada como parámetro sea una de las autorizadas.
             if (!apiKey || !authorizedApiKeys.includes(apiKey)) {
