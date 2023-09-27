@@ -1,6 +1,6 @@
 # API-Express.js-LABO-IV
 
-**API Utilizada: https://restcountries.com/v3.1**
+**API Utilizada: https://restcountries.com**
 
 **URL Render: https://api-express-js-coutries-continents.onrender.com/**
 
