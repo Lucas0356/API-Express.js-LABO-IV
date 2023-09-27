@@ -23,7 +23,7 @@ class Server{
             const apiKey = req.headers.api_key;
 
             // Traemos la lista de claves autorizadas.
-            const authorizedApiKeys = process.env.API_KEYS;
+            const authorizedApiKeys = process.env.API_KEY;
 
             // Verificamos que la api_key pasada como parámetro sea una de las autorizadas.
             if (!apiKey || !authorizedApiKeys.includes(apiKey)) {
