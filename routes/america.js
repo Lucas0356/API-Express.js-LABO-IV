@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { getCountries, getCountryByCode, getCountriesByLanguage } = require('../controllers/america');
+const { getCountries, getCountryByCode, getCountriesByLanguage, getCountryById } = require('../controllers/america');
 
 const rutas = Router();
 
@@ -11,5 +11,8 @@ rutas.get('/america/language', getCountriesByLanguage);
 
 // Buscar país de África por su código de país (ARG, USA, etc)
 rutas.get('/america/:param', getCountryByCode);
+
+// Buscar país de África por su ID
+rutas.get('/america/:id', getCountryById);
 
 module.exports = rutas;

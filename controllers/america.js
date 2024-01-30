@@ -111,6 +111,71 @@ const getCountryByCode = (req = request, res = response) => {
         });   
 }
 
+// Buscar país de América por su ID
+const getCountryById = (req = request, res = response) => {
+
+    const { id } = req.params;
+
+    axios.get(`${url}`)
+        .then(({ status, data, statusText }) => {
+            // Mapeamos los datos de los países de América para seleccionar ciertos atributos:
+            const country = data.filter(country => country.ccn3 === id)
+            .map(country => ({
+                // Nombre del país (oficial y common)
+                name: country.translations.spa,
+                // Bandera
+                flag: country.flag,
+                // Código de país (3 letras)
+                code: country.cioc,
+                // ID del país (num)
+                id: country.ccn3,
+                // Nombre de la(s) capital(es)
+                capital: country.capital,
+                // Lenguajes hablados en el país
+                languages: country.languages,
+                // Población
+                population: country.population, 
+                // Monedas de curso legal
+                currencies: country.currencies,
+                // Región del país
+                region: country.region,
+                // Subregión del país
+                subregion: country.subregion, 
+                // Países limítrofes
+                borders: country.borders
+            }));
+
+            // Cantidad de países en el objeto
+            const countryCount = country.length;
+
+            // Si no encontró al país, devolvemos un 404 not found
+            if (countryCount === 0){
+                res.status(404).json({
+                    status: 404,
+                    msg: `No existen países con el id ${id} en África.`,
+                });
+                return;
+            }
+
+            // Handle success
+            console.log({ status, data, statusText });
+            res.status(200).json({
+                status,
+                countryCount: countryCount,
+                country: country,
+                statusText
+            });
+        })
+        .catch((error)=>{
+            // Handle error
+            console.log(error);
+            res.status(400).json({
+                status:400,
+                msg: 'Error inesperado'
+            });
+        });  
+}
+
 const getCountriesByLanguage = (req = request, res = response) => {        
 
     const { language } = req.query;
@@ -170,4 +235,4 @@ const getCountriesByLanguage = (req = request, res = response) => {
         });      
 }
 
-module.exports = { getCountries, getCountryByCode, getCountriesByLanguage };
+module.exports = { getCountries, getCountryByCode, getCountriesByLanguage, getCountryById };
