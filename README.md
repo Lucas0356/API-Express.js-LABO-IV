@@ -2,7 +2,7 @@
 
 **API Utilizada: https://restcountries.com**
 
-**URL Render: https://api-express-js-coutries-continents.onrender.com/**
+**URL Render: https://api-express-continents.onrender.com/**
 
 <h2 style="color:#ff0000; font-size:36px;">---- DESCRIPCIÓN ----</h2>
 Esta API proporciona información sobre países del mundo, permitiendo a los usuarios acceder a datos específicos
