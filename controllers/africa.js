@@ -72,7 +72,7 @@ const getCountryById = (req = request, res = response) => {
                 // Monedas de curso legal
                 currencies: country.currencies,
                 // Región del país
-                region: country.region,
+                region: 'africa',
                 // Subregión del país
                 subregion: country.subregion, 
                 // Países limítrofes

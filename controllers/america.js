@@ -72,7 +72,6 @@ const getCountry = (req = request, res = response) => {
             }
 
             // Handle success
-            console.log({ status, data, statusText });
             res.status(200).json({
                 status,
                 countryCount: countryCount,
@@ -94,7 +93,7 @@ const getCountry = (req = request, res = response) => {
                     // Monedas de curso legal
                     currencies: country.currencies,
                     // Región del país
-                    region: country.region,
+                    region: 'america',
                     // Subregión del país
                     subregion: country.subregion,
                     // Países limítrofes
@@ -105,7 +104,6 @@ const getCountry = (req = request, res = response) => {
         })
         .catch((error) => {
             // Handle error
-            console.log(error);
             res.status(400).json({
                 status: 400,
                 msg: 'Error inesperado',
