@@ -31,7 +31,7 @@ const getCountries = (req = request, res = response) => {
             res.status(200).json({
                 status,
                 countryCount: countryCount,
-                africanCountries: countries,
+                countries: countries,
                 statusText
             });
         })
